@@ -31,7 +31,7 @@ function renderTasks(tasks) {
 
 /**
  * Create a task list item element
- * @param {Object} task - Task object with id, title, completed, createdAt
+ * @param {Object} task - Task object with id, text, completed, createdAt
  * @returns {HTMLElement} The list item element
  */
 function createTaskElement(task) {
@@ -43,12 +43,12 @@ function createTaskElement(task) {
     checkbox.type = 'checkbox';
     checkbox.id = 'task-' + task.id;
     checkbox.checked = task.completed;
-    checkbox.setAttribute('aria-label', );
+    checkbox.setAttribute('aria-label', 'Mark task as ' + (task.completed ? 'incomplete' : 'complete'));
     checkbox.addEventListener('change', () => handleToggle(task.id));
     
     const label = document.createElement('label');
     label.htmlFor = 'task-' + task.id;
-    label.textContent = task.title;
+    label.textContent = task.text || task.title;
     if (task.completed) {
         label.classList.add('completed');
     }
@@ -57,7 +57,7 @@ function createTaskElement(task) {
     deleteBtn.type = 'button';
     deleteBtn.className = 'delete-btn';
     deleteBtn.textContent = '×';
-    deleteBtn.setAttribute('aria-label', );
+    deleteBtn.setAttribute('aria-label', 'Delete task');
     deleteBtn.addEventListener('click', () => handleDelete(task.id));
     
     li.appendChild(checkbox);
@@ -74,7 +74,7 @@ function createTaskElement(task) {
 function handleToggle(taskId) {
     const updatedTask = toggleTask(taskId);
     if (updatedTask) {
-        const li = document.querySelector();
+        const li = document.querySelector('[data-task-id="' + taskId + '"]');
         if (li) {
             const label = li.querySelector('label');
             if (label) {
@@ -90,7 +90,7 @@ function handleToggle(taskId) {
  */
 function handleDelete(taskId) {
     if (deleteTask(taskId)) {
-        const li = document.querySelector();
+        const li = document.querySelector('[data-task-id="' + taskId + '"]');
         if (li) {
             li.remove();
         }
