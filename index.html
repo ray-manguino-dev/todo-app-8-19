@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDo App</title>
+  <style>
+    :root {
+      --primary: #4a90d9;
+      --primary-hover: #3a7bc8;
+      --bg: #f5f7fa;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --text-muted: #7f8c8d;
+      --border: #e1e8ed;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    /* Input Section */
+    .input-section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .input-section label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .task-form {
+      display: flex;
+      gap: 12px;
+    }
+
+    .task-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .task-input:focus {
+      border-color: var(--primary);
+    }
+
+    .task-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .add-btn {
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .add-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .add-btn:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Task List */
+    .task-list-container {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .task-list-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .task-list {
+      list-style: none;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+      transition: background 0.15s;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-item:hover {
+      background: #fafbfc;
+    }
+
+    .task-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .task-checkbox:checked {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .task-checkbox:checked::after {
+      content: '✓';
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .task-checkbox:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: 1rem;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      opacity: 0.6;
+      transition: opacity 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      background: #fdecea;
+    }
+
+    .delete-btn:focus-visible {
+      outline: 3px solid var(--danger);
+      outline-offset: 2px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state-text {
+      font-size: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      body { padding: 24px 16px; }
+      .task-form { flex-direction: column; }
+      .add-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <h1>ToDo App</h1>
+  <p class="subtitle">Manage your tasks easily</p>
+
+  <div class="app-container">
+    <section class="input-section" aria-labelledby="input-label">
+      <label id="input-label" for="task-input">Add a new task</label>
+      <form class="task-form" id="task-form">
+        <input
+          type="text"
+          id="task-input"
+          class="task-input"
+          placeholder="What needs to be done?"
+          aria-label="New task description"
+          maxlength="200"
+          autocomplete="off"
+        >
+        <button type="submit" class="add-btn">Add Task</button>
+      </form>
+    </section>
+
+    <section class="task-list-container" aria-labelledby="list-label">
+      <header class="task-list-header">
+        <span id="list-label" class="task-count" aria-live="polite"></span>
+      </header>
+      <ul class="task-list" id="task-list" role="list" aria-label="Task list"></ul>
+      <div class="empty-state" id="empty-state" hidden>
+        <div class="empty-state-icon">📝</div>
+        <p class="empty-state-text">No tasks yet. Add one above!</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'todo-app-tasks';
+
+    // State
+    let tasks = [];
+
+    // DOM Elements
+    const form = document.getElementById('task-form');
+    const input = document.getElementById('task-input');
+    const list = document.getElementById('task-list');
+    const emptyState = document.getElementById('empty-state');
+    const taskCount = document.getElementById('task-count');
+
+    // Load tasks from localStorage
+    function loadTasks() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        tasks = stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        tasks = [];
+      }
+    }
+
+    // Save tasks to localStorage
+    function saveTasks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    }
+
+    // Generate unique ID
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Update task count display
+    function updateCount() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      if (total === 0) {
+        taskCount.textContent = 'No tasks';
+      } else if (completed === total) {
+        taskCount.textContent = `All ${total} tasks completed ✓`;
+      } else {
+        taskCount.textContent = `${completed} of ${total} completed`;
+      }
+    }
+
+    // Render a single task
+    function renderTask(task) {
+      const li = document.createElement('li');
+      li.className = 'task-item' + (task.completed ? ' completed' : '');
+      li.dataset.id = task.id;
+
+      li.innerHTML = `
+        <input
+          type="checkbox"
+          class="task-checkbox"
+          ${task.completed ? 'checked' : ''}
+          aria-label="Mark task as ${task.completed ? 'incomplete' : 'complete'}"
+          title="${task.completed ? 'Mark incomplete' : 'Mark complete'}"
+        >
+        <span class="task-text">${escapeHtml(task.text)}</span>
+        <button class="delete-btn" aria-label="Delete task" title="Delete task">🗑️</button>
+      `;
+
+      return li;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Render all tasks
+    function renderTasks() {
+      list.innerHTML = '';
+      emptyState.hidden = tasks.length > 0;
+
+      tasks.forEach(task => {
+        list.appendChild(renderTask(task));
+      });
+
+      updateCount();
+    }
+
+    // Add a new task
+    function addTask(text) {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+
+      const task = {
+        id: generateId(),
+        text: trimmed,
+        completed: false,
+        createdAt: new Date().toISOString()
+      };
+
+      tasks.push(task);
+      saveTasks();
+
+      const li = renderTask(task);
+      list.appendChild(li);
+      emptyState.hidden = true;
+      updateCount();
+    }
+
+    // Toggle task completion
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        saveTasks();
+
+        const li = list.querySelector(`[data-id="${id}"]`);
+        if (li) {
+          li.classList.toggle('completed', task.completed);
+          li.querySelector('.task-checkbox').checked = task.completed;
+          li.querySelector('.task-checkbox').setAttribute('aria-label', `Mark task as ${task.completed ? 'incomplete' : 'complete'}`);
+        }
+        updateCount();
+      }
+    }
+
+    // Delete a task
+    function deleteTask(id) {
+      const index = tasks.findIndex(t => t.id === id);
+      if (index !== -1) {
+        tasks.splice(index, 1);
+        saveTasks();
+
+        const li = list.querySelector(`[data-id="${id}"]`);
+        if (li) {
+          li.remove();
+        }
+
+        if (tasks.length === 0) {
+          emptyState.hidden = false;
+        }
+        updateCount();
+      }
+    }
+
+    // Event: Form submit (add task)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      addTask(input.value);
+      input.value = '';
+      input.focus();
+    });
+
+    // Event: Click delegation on task list
+    list.addEventListener('click', (e) => {
+      const li = e.target.closest('.task-item');
+      if (!li) return;
+      const id = li.dataset.id;
+
+      if (e.target.classList.contains('task-checkbox')) {
+        toggleTask(id);
+      } else if (e.target.classList.contains('delete-btn') || e.target.closest('.delete-btn')) {
+        deleteTask(id);
+      }
+    });
+
+    // Keyboard accessibility for checkbox
+    list.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        const checkbox = e.target.closest('.task-item')?.querySelector('.task-checkbox');
+        if (checkbox && document.activeElement === checkbox) {
+          e.preventDefault();
+          checkbox.click();
+        }
+      }
+    });
+
+    // Initialize
+    loadTasks();
+    renderTasks();
+  </script>
+</body>
+</html>
