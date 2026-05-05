@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app-container" role="main">
+        <header class="app-header">
+            <h1>My Tasks</h1>
+        </header>
+
+        <form class="task-form" id="taskForm" aria-label="Add new task">
+            <div class="input-group">
+                <label for="taskInput" class="visually-hidden">Task title</label>
+                <input 
+                    type="text" 
+                    id="taskInput" 
+                    name="taskInput"
+                    class="task-input" 
+                    placeholder="What needs to be done?"
+                    aria-describedby="taskHint"
+                    autocomplete="off"
+                    required
+                >
+                <span id="taskHint" class="visually-hidden">Enter your task and press Add or press Enter</span>
+                <button type="submit" class="add-button" aria-label="Add task">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Add</span>
+                </button>
+            </div>
+        </form>
+
+        <section class="task-list-container" aria-label="Task list">
+            <ul class="task-list" id="taskList" role="list" aria-live="polite" aria-label="Your tasks"></ul>
+            <div class="empty-state" id="emptyState" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+                <p>No tasks yet. Add one above!</p>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
